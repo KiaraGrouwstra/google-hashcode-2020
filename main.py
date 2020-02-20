@@ -60,28 +60,24 @@ def read_lib(fpath):
     for no, line in enumerate(data_lines):
         line = list(map(int, line.split(' ')))
         if no == 0:
-            no_books = line[0] # total books
+            (no_books, no_libraries, no_days) = line
             print(f'There are {no_books} books.')
-            no_libraries = line[1] # total libraries
             print(f'There are {no_libraries} libraries.')
-            no_days = line[2] # days available
             print(f'We have {no_days} days available.')
-        if no == 1:
-            book_ids = [i for i in range(len(line))] 
-            book_scores = [i for i in line]
-        if no > 1:
+        elif no == 1:
+            book_ids = list(range(len(line)))
+            book_scores = line
+        else:
             if no % 2 == 0:
                 book_id = no-2
-                no_books_lib = line[0]
-                time_to_signup = line[1]
-                scan_per_day = line[2]
+                (no_books_lib, time_to_signup, scan_per_day) = line
             else:
                 books_in_lib = line
                 libraries.append(Library(idx=book_id,
-                                    time_to_signup=time_to_signup,
-                                    scan_per_day=scan_per_day, 
-                                    books_in=books_in_lib,
-                                    no_books=no_books_lib))
+                                         time_to_signup=time_to_signup,
+                                         scan_per_day=scan_per_day, 
+                                         books_in=books_in_lib,
+                                         no_books=no_books_lib))
     for no, book_id in enumerate(book_ids):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
         books.append(Book(idx=book_id, libraries=np.nonzero(np.asarray(book_in_libraries)), score=book_scores[no]))
