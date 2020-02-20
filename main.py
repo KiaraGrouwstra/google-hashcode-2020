@@ -28,9 +28,11 @@ def parse_args():
 
 def main():
     args = parse_args()
-    books, libraries  = read_lib(args.file)
+    books, libraries, no_days  = read_lib(args.file)
     print(books)
     print(libraries)
+
+    return books, libraries, no_days
 
 def read_lib(fpath):
     with open(fpath) as f:
@@ -67,7 +69,7 @@ def read_lib(fpath):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
         books.append(Book(idx=book_id, libraries=np.nonzero(np.asarray(book_in_libraries)), score=book_scores[no]))
 
-    return books, libraries
+    return books, libraries, no_days
 
 def print_lib(lib):
     for line in lib:
