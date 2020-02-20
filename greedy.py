@@ -67,5 +67,5 @@ if __name__ == "__main__":
     libraries = search.greedy_search()
     print('done')
     print(libraries)
-    libsumissions = map(lambda x: LibSubmission(idx=x.idx, boks=x.books_in), libraries)
+    libsumissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
     write_submission(libsumissions, 'result')

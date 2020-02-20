@@ -11,24 +11,24 @@ class LibSubmission:
     books: List[int]
 
 def serialize_lib(lib_submission: LibSubmission) -> str:
-    first_line = ' '.join((lib_submission.id, len(lib_submission.books)))
-    second_line = ' '.join(lib_submission.books)
+    first_line = ' '.join((str(lib_submission.id), str(len(lib_submission.books))))
+    second_line = ' '.join(list(map(str, lib_submission.books)))
     return '\n'.join((first_line, second_line))
 
 def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
     num_libs = len(lib_submissions)
-    return '\n'.join([num_libs, *list(map(serialize_lib, lib_submissions))])
+    s = '\n'.join([str(num_libs), *list(map(serialize_lib, lib_submissions))])
+    with open(write_path, 'w+') as f:
+        f.write(s)
 
 @dataclass(frozen=True)
 class Book():
-
     idx: int
     libraries: List[int]
     score: int
 
 @dataclass(frozen=True)
 class Library(): 
-
     idx: int
     time_to_signup: int
     scan_per_day: int
@@ -40,7 +40,6 @@ def parse_args():
     parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
     parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
-
 
 def main():
     args = parse_args()
