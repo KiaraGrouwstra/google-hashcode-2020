@@ -1,25 +1,32 @@
-from main import main, LibSubmission, write_submission
+from typing import List, Dict, Tuple
+from main import main, LibSubmission, write_submission, Book, Library
 
 from statistics import mean
 
 
 class Search:
-    def __init__(self, books, libraries, no_days):
-        self.books_processed = {}
-        self.libraries_remaining = []
-        self.processed_libraries = []
+    def __init__(self, books: List[Book], libraries: List[Library], no_days: int) -> None:
+        self.books_processed: Dict[int, Library] = {}
+        self.libraries_remaining: List[Library] = []
+        self.processed_libraries: List[Library] = []
         for library in libraries:
             self.libraries_remaining.append(library)
+<<<<<<< HEAD
         self.days_remaining = no_days
         self.books = books
         print(books)
+=======
+        self.days_remaining: int = no_days
+        self.books: List[Book] = books
+>>>>>>> 13812f18cbae561fc50d90d3ba3c11485381259f
 
-    def greedy_search(self):
+    def greedy_search(self) -> List[Library]:
         while (self.days_remaining > 0 and len(self.libraries_remaining) > 0):
             self.iteration(self.libraries_remaining)
         return self.processed_libraries
 
 
+<<<<<<< HEAD
     def order_books(self, books):
         unique_books = self.get_unique_books(lib_books)
 
@@ -35,6 +42,9 @@ class Search:
 
 
     def iteration(self,libraries):
+=======
+    def iteration(self, libraries: List[Library]) -> None:
+>>>>>>> 13812f18cbae561fc50d90d3ba3c11485381259f
         local_scores = []
         max_score = -1
         best_lib = -1
@@ -48,7 +58,7 @@ class Search:
         del self.libraries_remaining[best_lib]
 
 
-    def sign_up(self,library):
+    def sign_up(self, library: Library) -> None:
         lib_books = []
         for book in library.books_in:
             lib_books.append(self.books[book])
@@ -60,7 +70,7 @@ class Search:
         self.processed_libraries.append(library)
 
 
-    def get_unique_books(self,books):
+    def get_unique_books(self, books: List[Book]) -> List[Book]:
         unique_books = []
         for book in books:
             if book.idx not in self.books_processed:
@@ -68,7 +78,7 @@ class Search:
         return unique_books
 
 
-    def get_local_score(self, library):
+    def get_local_score(self, library: Library) -> float:
         books = library.books_in
         lib_books = []
         for book in books:
@@ -90,5 +100,5 @@ if __name__ == "__main__":
     libraries = search.greedy_search()
     print('done')
     print(libraries)
-    libsumissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
-    write_submission(libsumissions, 'result_d')
+    lib_submissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
+    write_submission(lib_submissions, 'result')
