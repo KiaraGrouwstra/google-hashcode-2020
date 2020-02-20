@@ -1,10 +1,11 @@
+from typing import List, Dict, Tuple
 import math
 
-def round_down(n, decimals=0):
+def round_down(n: int, decimals: int=0) -> int:
     multiplier = 10 ** decimals
-    return math.floor(n * multiplier) / multiplier
-                
-def establish_books_per_library(D, library_order, books_per_day, sign_up_times):
+    return int(math.floor(n * multiplier) / multiplier)
+
+def establish_books_per_library(D: int, library_order: List[int], books_per_day: Dict[int, int], sign_up_times: Dict[int, int]) -> List[Tuple[int, int]]:
     number_of_books_sent_by_library = []
     for library in library_order:
         if D-sign_up_times[library] < 0:
@@ -14,24 +15,24 @@ def establish_books_per_library(D, library_order, books_per_day, sign_up_times):
             number_of_books_sent_by_library.append((library, round_down(D*books_per_day[library])))  
     return number_of_books_sent_by_library
 
-def gimme_books_printed(number_of_books_sent_by_library, book_order_in_library):
+def gimme_books_printed(number_of_books_sent_by_library: List[Tuple[int, int]], book_order_in_library: Dict[int, List[int]]) -> List[int]:
     books_printed = []
-    for library in number_of_books_sent_by_library:
+    for (lib_idx, books_scanned) in number_of_books_sent_by_library:
         count = 0
-        for book in book_order_in_library[library[0]]:
+        for book in book_order_in_library[lib_idx]:
             books_printed.append(book)
             count = count+1
-            if count == library[1]:
+            if count == books_scanned:
                 break
     return list(set(books_printed))
 
-def gimme_score(books_printed, book_scores):
+def gimme_score(books_printed: List[int], book_scores: Dict[int, int]) -> int:
     score = 0 
     for book in books_printed:
         score += book_scores[book]
     return score
 
-def evaluate(days, library_order, book_order_in_library, books_per_day, sign_up_times, book_scores):
+def evaluate(days: int, library_order: List[int], book_order_in_library: Dict[int, List[int]], books_per_day: Dict[int, int], sign_up_times: Dict[int, int], book_scores: Dict[int, int]) -> int:
     number_of_books_sent_by_library = establish_books_per_library(days, library_order, books_per_day, sign_up_times)
     books_printed = gimme_books_printed(number_of_books_sent_by_library, book_order_in_library)
     score = gimme_score(books_printed, book_scores)

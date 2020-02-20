@@ -35,13 +35,13 @@ class Library():
     books_in: List[int]
     no_books: int
 
-def parse_args():
+def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
     parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
 
-def main():
+def main() -> Tuple[List[Book], List[Library], int]:
     args = parse_args()
 
     start = time.time()
@@ -51,7 +51,7 @@ def main():
 
     return books, libraries, no_days
 
-def read_lib(fpath):
+def read_lib(fpath: str) -> Tuple[List[Book], List[Library], int]:
     with open(fpath) as f:
         data_str = f.read()
     data_lines = data_str.splitlines()
@@ -86,7 +86,7 @@ def read_lib(fpath):
 
     return (books, libraries, no_days)
 
-# def print_lib(lib):
+# def print_lib(lib: List[List[int]]) -> None:
 #     for line in lib:
 #         for i in line:
 #             print(i, end=' ')
