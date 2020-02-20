@@ -11,6 +11,7 @@ class Search:
         for library in libraries:
             self.libraries_remaining.append(library)
         self.days_remaining = no_days
+        self.books = books
 
     def greedy_search(self):
         while (self.days_remaining > 0 and len(self.libraries_remaining) > 0):
@@ -33,9 +34,12 @@ class Search:
 
 
     def sign_up(self,library):
-        unique_books = self.get_unique_books(library.books_in)
+        lib_books = []
+        for book in library.books_in:
+            lib_books.append(self.books[book])
+        unique_books = self.get_unique_books(lib_books)
         for book in unique_books:
-            self.books_processed[book] = library
+            self.books_processed[book.idx] = library
 
         self.days_remaining -= library.time_to_signup
         self.processed_libraries.append(library)
@@ -44,14 +48,17 @@ class Search:
     def get_unique_books(self,books):
         unique_books = []
         for book in books:
-            if book not in self.books_processed:
+            if book.idx not in self.books_processed:
                 unique_books.append(book)
         return unique_books
 
 
     def get_local_score(self, library):
         books = library.books_in
-        unique_books = self.get_unique_books(books)
+        lib_books = []
+        for book in books:
+            lib_books.append(self.books[book])
+        unique_books = map(lambda x: x.score, self.get_unique_books(lib_books))
         mean_score_unique_books = mean(unique_books)
         number_of_books_per_day =-1
         number_of_books_in_library = -1
