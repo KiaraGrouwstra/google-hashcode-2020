@@ -11,14 +11,8 @@ class Search:
         self.processed_libraries: List[Library] = []
         for library in libraries:
             self.libraries_remaining.append(library)
-<<<<<<< HEAD
-        self.days_remaining = no_days
-        self.books = books
-        print(books)
-=======
         self.days_remaining: int = no_days
         self.books: List[Book] = books
->>>>>>> 13812f18cbae561fc50d90d3ba3c11485381259f
 
     def greedy_search(self) -> List[Library]:
         while (self.days_remaining > 0 and len(self.libraries_remaining) > 0):
@@ -26,7 +20,6 @@ class Search:
         return self.processed_libraries
 
 
-<<<<<<< HEAD
     def order_books(self, books):
         unique_books = self.get_unique_books(lib_books)
 
@@ -41,10 +34,7 @@ class Search:
             
 
 
-    def iteration(self,libraries):
-=======
-    def iteration(self, libraries: List[Library]) -> None:
->>>>>>> 13812f18cbae561fc50d90d3ba3c11485381259f
+    def iteration(self,libraries) -> None:
         local_scores = []
         max_score = -1
         best_lib = -1
@@ -101,4 +91,4 @@ if __name__ == "__main__":
     print('done')
     print(libraries)
     lib_submissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
-    write_submission(lib_submissions, 'result')
+    write_submission(lib_submissions, 'result_test')

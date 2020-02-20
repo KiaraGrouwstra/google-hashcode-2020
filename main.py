@@ -13,13 +13,18 @@ class LibSubmission:
     books: List[int]
 
 def serialize_lib(lib_submission: LibSubmission) -> str:
+    print('serializing lib')
     first_line = ' '.join((str(lib_submission.id), str(len(lib_submission.books))))
+    print('first_line done')
     second_line = ' '.join(list(map(str, lib_submission.books)))
+    print('second_line done')
     return '\n'.join((first_line, second_line))
 
 def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
     num_libs = len(lib_submissions)
+    print('num_libs')
     s = '\n'.join([str(num_libs), *list(map(serialize_lib, lib_submissions))])
+    print('s')
     with open(write_path, 'w+') as f:
         f.write(s)
 
