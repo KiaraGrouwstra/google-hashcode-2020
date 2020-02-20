@@ -1,4 +1,4 @@
-from main import main
+from main import main, LibSubmission, write_submission
 
 from statistics import mean
 
@@ -67,3 +67,5 @@ if __name__ == "__main__":
     libraries = search.greedy_search()
     print('done')
     print(libraries)
+    libsumissions = map(lambda x: LibSubmission(idx=x.idx, boks=x.books_in), libraries)
+    write_submission(libsumissions, 'result')
