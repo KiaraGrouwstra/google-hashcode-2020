@@ -1,0 +1,8 @@
+name: hashcode
+channels:
+- defaults
+dependencies:
+- numpy
+- scipy
+- pandas
+- pytest
