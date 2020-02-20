@@ -4,6 +4,21 @@ from typing import List, Dict, Tuple
 import argparse
 import time
 
+# Submission = List[Lib]  # order: signup
+@dataclass(frozen=True)
+class LibSubmission:
+    id: int
+    books: List[int]
+
+def serialize_lib(lib_submission: LibSubmission) -> str:
+    first_line = ' '.join((lib_submission.id, len(lib_submission.books)))
+    second_line = ' '.join(lib_submission.books)
+    return '\n'.join((first_line, second_line))
+
+def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
+    num_libs = len(lib_submissions)
+    return '\n'.join([num_libs, *list(map(serialize_lib, lib_submissions))])
+
 @dataclass(frozen=True)
 class Book():
 
@@ -23,15 +38,19 @@ class Library():
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
+    parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
+
     start = time.time()
-    books, libraries  = read_lib(args.file)
+    books, libraries, no_days = read_lib(args.file)
     end = time.time()
     print(f'finished in {end-start} seconds.')
+
+    return books, libraries, no_days
 
 def read_lib(fpath):
     with open(fpath) as f:
@@ -74,7 +93,7 @@ def read_lib(fpath):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
         books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
 
-    return books, libraries
+    return books, libraries, no_days
 
 def print_lib(lib):
     for line in lib:
