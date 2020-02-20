@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 import argparse
-
+import time
 
 # Submission = List[Lib]  # order: signup
 @dataclass(frozen=True)
@@ -43,11 +43,11 @@ def parse_args():
 
 def main():
     args = parse_args()
-    books, libraries, no_days  = read_lib(args.file)
-    print(books)
-    print(libraries)
-    # lib_submissions = ?
-    # write_submission(lib_submissions, args.submission)
+
+    start = time.time()
+    books, libraries, no_days = read_lib(args.file)
+    end = time.time()
+    print(f'finished in {end-start} seconds.')
 
     return books, libraries, no_days
 
@@ -76,19 +76,21 @@ def read_lib(fpath):
     books = []
     for no, book_id in enumerate(book_ids):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
-        books.append(Book(idx=book_id, libraries=np.nonzero(np.asarray(book_in_libraries)), score=book_scores[no]))
+        books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
 
+    # print metadata
+    print(f'There are {len(data_lines)} lines in submission.')
     print(f'There are {no_books} books.')
     print(f'There are {no_libraries} libraries.')
     print(f'We have {no_days} days available.')
 
     return (books, libraries, no_days)
 
-def print_lib(lib):
-    for line in lib:
-        for i in line:
-            print(i, end=' ')
-        print('')
+# def print_lib(lib):
+#     for line in lib:
+#         for i in line:
+#             print(i, end=' ')
+#         print('')
 
 if __name__ == '__main__':
     main()
