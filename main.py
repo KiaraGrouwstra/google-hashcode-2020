@@ -13,20 +13,25 @@ class LibSubmission:
     books: List[int]
 
 def serialize_lib(lib_submission: LibSubmission) -> str:
+    print('serializing lib')
     first_line = ' '.join((str(lib_submission.id), str(len(lib_submission.books))))
+    print('first_line done')
     second_line = ' '.join(list(map(str, lib_submission.books)))
+    print('second_line done')
     return '\n'.join((first_line, second_line))
 
 def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
     num_libs = len(lib_submissions)
+    print('num_libs')
     s = '\n'.join([str(num_libs), *list(map(serialize_lib, lib_submissions))])
+    print('s')
     with open(write_path, 'w+') as f:
         f.write(s)
 
 @dataclass(frozen=True)
 class Book():
     idx: int
-    libraries: List[int]
+    # libraries: List[int]
     score: int
 
 @dataclass(frozen=True)
@@ -39,7 +44,7 @@ class Library():
 
 def parse_args() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
+    parser.add_argument('--file', type=str, default='./data/d_tough_choices.txt', help='library file to read')
     parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
 
@@ -102,8 +107,8 @@ def read_lib(fpath: str) -> Tuple[List[Book], List[Library], int]:
 
     books = []
     for no, book_id in enumerate(book_ids):
-        book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
-        books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
+        # book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
+        books.append(Book(idx=book_id, score=book_scores[no]))
 
     # print metadata
     print(f'There are {len(data_lines)} lines in submission.')

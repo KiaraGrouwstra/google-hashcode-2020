@@ -20,7 +20,21 @@ class Search:
         return self.processed_libraries
 
 
-    def iteration(self, libraries: List[Library]) -> None:
+    def order_books(self, books):
+        unique_books = self.get_unique_books(lib_books)
+
+        sorted_score_books = sort(lambda x: x.score, unique_books)
+        
+        ordered_books = []
+        for book in sorted_score_books:
+            ordered_books.append(book)
+        for book in books:
+            if book not in ordered_books:
+                ordered_books.append(book)
+            
+
+
+    def iteration(self,libraries) -> None:
         local_scores = []
         max_score = -1
         best_lib = -1
@@ -70,10 +84,11 @@ class Search:
 
 
 if __name__ == "__main__":
-    books, libraries, no_days = main()
-    search = Search(books, libraries, no_days) 
+    books, libraries, d = main()
+    print(books)
+    search = Search(books, libraries, d['no_days']) 
     libraries = search.greedy_search()
     print('done')
     print(libraries)
     lib_submissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
-    write_submission(lib_submissions, 'result')
+    write_submission(lib_submissions, 'result_test')
