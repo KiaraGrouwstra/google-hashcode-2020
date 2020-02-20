@@ -1,5 +1,11 @@
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
+    return parser.parse_args()
 
 @dataclass(frozen=True)
 class Foo:
@@ -7,8 +13,8 @@ class Foo:
     baz: int
 
 def main():
-    fpath = './data/a_example.txt'
-    data_num_lists = read_lib(fpath)
+    args = parse_args()
+    data_num_lists = read_lib(args.file)
     print_lib(data_num_lists)
 
 def read_lib(fpath):
