@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 import argparse
-
+import time
 
 @dataclass(frozen=True)
 class Book():
@@ -28,9 +28,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    start = time.time()
     books, libraries  = read_lib(args.file)
-    print(books)
-    print(libraries)
+    end = time.time()
+    print(f'finished in {end-start} seconds.')
 
 def read_lib(fpath):
     with open(fpath) as f:
@@ -38,8 +39,13 @@ def read_lib(fpath):
     data_lines = data_str.splitlines()
     books = []
     libraries = []
+    print(f'There are {len(data_lines)} lines in submission.')
     for no, line in enumerate(data_lines):
-        line = list(map(int, line.split(' ')))
+        try:
+            line = list(map(int, line.split(' ')))
+        except ValueError:
+            print(f'No line provided at line {no+1} out of {len(data_lines)}')
+            break
         if no == 0:
             no_books = line[0] # total books
             print(f'There are {no_books} books.')
@@ -51,6 +57,7 @@ def read_lib(fpath):
             book_ids = [i for i in range(len(line))] 
             book_scores = [i for i in line]
         if no > 1:
+            
             if no % 2 == 0:
                 book_id = no-2
                 no_books_lib = line[0]
@@ -65,7 +72,7 @@ def read_lib(fpath):
                                     no_books=no_books_lib))
     for no, book_id in enumerate(book_ids):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
-        books.append(Book(idx=book_id, libraries=np.nonzero(np.asarray(book_in_libraries)), score=book_scores[no]))
+        books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
 
     return books, libraries
 
