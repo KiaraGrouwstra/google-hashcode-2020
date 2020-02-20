@@ -1,8 +1,10 @@
+import dill
 import numpy as np
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 import argparse
 import time
+import os
 
 # Submission = List[Lib]  # order: signup
 @dataclass(frozen=True)
@@ -45,12 +47,29 @@ def parse_args():
 def main():
     args = parse_args()
 
-    start = time.time()
-    books, libraries, no_days = read_lib(args.file)
-    end = time.time()
-    print(f'finished in {end-start} seconds.')
+    if not os.path.exists(args.file.replace('.txt', '/')):
+        os.makedirs(args.file.replace('.txt', '/'))
+        start = time.time()
+        books, libraries, meta = read_lib(args.file)
+        end = time.time()
+        print(f'finished in {end-start} seconds.')
 
-    return books, libraries, no_days
+        with open(args.file.replace('.txt', '/') + 'books.dll', 'wb') as file:
+            dill.dump(books, file)
+        with open(args.file.replace('.txt', '/') + 'libraries.dll', 'wb') as file:
+            dill.dump(libraries, file)
+        with open(args.file.replace('.txt', '/') + 'meta.dll', 'wb') as file:
+            dill.dump(meta, file)
+    else:        
+        with open(args.file.replace('.txt', '/') + 'books.dll', 'rb') as file:
+            books = dill.load(file)
+        with open(args.file.replace('.txt', '/') + 'libraries.dll', 'rb') as file:
+            libraries = dill.load(file)
+        with open(args.file.replace('.txt', '/') + 'meta.dll', 'rb') as file:
+            meta = dill.load(file)
+    # print(libraries)
+    # print(books)
+    return books, libraries, meta
 
 def read_lib(fpath):
     with open(fpath) as f:
@@ -58,6 +77,7 @@ def read_lib(fpath):
     data_lines = data_str.splitlines()
     books = []
     libraries = []
+    temp_id = 0
     print(f'There are {len(data_lines)} lines in submission.')
     for no, line in enumerate(data_lines):
         try:
@@ -78,7 +98,8 @@ def read_lib(fpath):
         if no > 1:
             
             if no % 2 == 0:
-                book_id = no-2
+                book_id = temp_id
+                temp_id += 1
                 no_books_lib = line[0]
                 time_to_signup = line[1]
                 scan_per_day = line[2]
@@ -93,7 +114,7 @@ def read_lib(fpath):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
         books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
 
-    return books, libraries, no_days
+    return books, libraries, {'no_days': no_days, 'no_libraries': no_libraries, 'no_books': no_books}
 
 def print_lib(lib):
     for line in lib:
