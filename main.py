@@ -66,8 +66,8 @@ def main():
             libraries = dill.load(file)
         with open(args.file.replace('.txt', '/') + 'meta.dll', 'rb') as file:
             meta = dill.load(file)
-    print(libraries)
-    print(books)
+    # print(libraries)
+    # print(books)
     return books, libraries, meta
 
 def read_lib(fpath):
