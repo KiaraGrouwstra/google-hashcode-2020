@@ -55,34 +55,34 @@ def read_lib(fpath):
     with open(fpath) as f:
         data_str = f.read()
     data_lines = data_str.splitlines()
-    books = []
+    data_num_lists = [list(map(int, line.split(' '))) for line in data_lines]
+    (meta, book_scores, *lib_lines) = data_num_lists
+    (no_books, no_libraries, no_days) = meta
+    book_ids = list(range(len(book_scores)))
+
     libraries = []
-    for no, line in enumerate(data_lines):
-        line = list(map(int, line.split(' ')))
-        if no == 0:
-            (no_books, no_libraries, no_days) = line
-            print(f'There are {no_books} books.')
-            print(f'There are {no_libraries} libraries.')
-            print(f'We have {no_days} days available.')
-        elif no == 1:
-            book_ids = list(range(len(line)))
-            book_scores = line
+    for no, line in enumerate(lib_lines):
+        if no % 2 == 0:
+            book_id = no
+            (no_books_lib, time_to_signup, scan_per_day) = line
         else:
-            if no % 2 == 0:
-                book_id = no-2
-                (no_books_lib, time_to_signup, scan_per_day) = line
-            else:
-                books_in_lib = line
-                libraries.append(Library(idx=book_id,
-                                         time_to_signup=time_to_signup,
-                                         scan_per_day=scan_per_day, 
-                                         books_in=books_in_lib,
-                                         no_books=no_books_lib))
+            books_in_lib = line
+            libraries.append(Library(idx=book_id,
+                                     time_to_signup=time_to_signup,
+                                     scan_per_day=scan_per_day, 
+                                     books_in=books_in_lib,
+                                     no_books=no_books_lib))
+
+    books = []
     for no, book_id in enumerate(book_ids):
         book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
         books.append(Book(idx=book_id, libraries=np.nonzero(np.asarray(book_in_libraries)), score=book_scores[no]))
 
-    return books, libraries, no_days
+    print(f'There are {no_books} books.')
+    print(f'There are {no_libraries} libraries.')
+    print(f'We have {no_days} days available.')
+
+    return (books, libraries, no_days)
 
 def print_lib(lib):
     for line in lib:
