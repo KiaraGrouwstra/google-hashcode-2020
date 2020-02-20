@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple
+from main import Book, Library, LibSubmission
 import math
 
 def round_down(n: int, decimals: int=0) -> int:
@@ -37,3 +38,11 @@ def evaluate(D: int, library_order: List[int], book_order_in_library: Dict[int, 
     books_printed = gimme_books_printed(number_of_books_sent_by_library, book_order_in_library)
     score = gimme_score(books_printed, book_scores)
     return score
+
+def eval_lib_submissions(lib_submissions: List[LibSubmission], no_days: int, libraries: List[Library], books: List[Book]) -> int:
+    return evaluate(D=no_days,
+                    library_order=list(map(lambda sub: sub.id, lib_submissions)),
+                    book_order_in_library = dict(map(lambda sub: (sub.id, sub.books), lib_submissions)),
+                    books_per_day = dict(map(lambda lib: (lib.idx, lib.scan_per_day), libraries)),
+                    sign_up_times = dict(map(lambda lib: (lib.idx, lib.time_to_signup), libraries)),
+                    book_scores = dict(map(lambda book: (book.idx, book.score), books)))

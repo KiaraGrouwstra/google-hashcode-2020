@@ -1,5 +1,6 @@
 from typing import List, Dict, Tuple
 from main import main, LibSubmission, write_submission, Book, Library
+from evaluate import eval_lib_submissions
 
 from statistics import mean
 
@@ -85,10 +86,12 @@ class Search:
 
 if __name__ == "__main__":
     books, libraries, d = main()
-    print(books)
+    # print(books)
     search = Search(books, libraries, d['no_days']) 
     libraries = search.greedy_search()
     print('done')
-    print(libraries)
+    # print(libraries)
     lib_submissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
+    score = eval_lib_submissions(lib_submissions, no_days, libraries, books)
+    print(score)
     write_submission(lib_submissions, 'result_test')
