@@ -26,7 +26,7 @@ def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
 @dataclass(frozen=True)
 class Book():
     idx: int
-    libraries: List[int]
+    # libraries: List[int]
     score: int
 
 @dataclass(frozen=True)
@@ -39,7 +39,7 @@ class Library():
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
+    parser.add_argument('--file', type=str, default='./data/d_tough_choices.txt', help='library file to read')
     parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
 
@@ -102,8 +102,8 @@ def read_lib(fpath):
 
     books = []
     for no, book_id in enumerate(book_ids):
-        book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
-        books.append(Book(idx=book_id, libraries=list(np.nonzero(np.asarray(book_in_libraries))), score=book_scores[no]))
+        # book_in_libraries = [1 if book_id in library.books_in else 0 for library in libraries]
+        books.append(Book(idx=book_id, score=book_scores[no]))
 
     # print metadata
     print(f'There are {len(data_lines)} lines in submission.')

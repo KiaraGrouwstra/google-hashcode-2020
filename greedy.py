@@ -12,11 +12,26 @@ class Search:
             self.libraries_remaining.append(library)
         self.days_remaining = no_days
         self.books = books
+        print(books)
 
     def greedy_search(self):
         while (self.days_remaining > 0 and len(self.libraries_remaining) > 0):
             self.iteration(self.libraries_remaining)
         return self.processed_libraries
+
+
+    def order_books(self, books):
+        unique_books = self.get_unique_books(lib_books)
+
+        sorted_score_books = sort(lambda x: x.score, unique_books)
+        
+        ordered_books = []
+        for book in sorted_score_books:
+            ordered_books.append(book)
+        for book in books:
+            if book not in ordered_books:
+                ordered_books.append(book)
+            
 
 
     def iteration(self,libraries):
@@ -69,10 +84,11 @@ class Search:
 
 
 if __name__ == "__main__":
-    books, libraries, no_days = main()
-    search = Search(books, libraries, no_days) 
+    books, libraries, d = main()
+    print(books)
+    search = Search(books, libraries, d['no_days']) 
     libraries = search.greedy_search()
     print('done')
     print(libraries)
     libsumissions = list(map(lambda x: LibSubmission(id=x.idx, books=x.books_in), libraries))
-    write_submission(libsumissions, 'result')
+    write_submission(libsumissions, 'result_d')
