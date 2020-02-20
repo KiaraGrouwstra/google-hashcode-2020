@@ -4,6 +4,21 @@ from typing import List, Dict, Tuple
 import argparse
 
 
+# Submission = List[Lib]  # order: signup
+@dataclass(frozen=True)
+class LibSubmission:
+    id: int
+    books: List[int]
+
+def serialize_lib(lib_submission: LibSubmission) -> str:
+    first_line = ' '.join((lib_submission.id, len(lib_submission.books)))
+    second_line = ' '.join(lib_submission.books)
+    return '\n'.join((first_line, second_line))
+
+def write_submission(lib_submissions: List[LibSubmission], write_path) -> None:
+    num_libs = len(lib_submissions)
+    return '\n'.join([num_libs, *list(map(serialize_lib, lib_submissions))])
+
 @dataclass(frozen=True)
 class Book():
 
@@ -23,6 +38,7 @@ class Library():
 def parse_args():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('--file', type=str, default='./data/a_example.txt', help='library file to read')
+    parser.add_argument('--submission', type=str, default='./submission.txt', help='file path to write our submission to')
     return parser.parse_args()
 
 
@@ -31,6 +47,8 @@ def main():
     books, libraries, no_days  = read_lib(args.file)
     print(books)
     print(libraries)
+    # lib_submissions = ?
+    # write_submission(lib_submissions, args.submission)
 
     return books, libraries, no_days
 
