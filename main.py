@@ -1,8 +1,10 @@
+import dill
 import numpy as np
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 import argparse
 import time
+import os
 
 # Submission = List[Lib]  # order: signup
 @dataclass(frozen=True)
@@ -44,26 +46,51 @@ def parse_args() -> argparse.ArgumentParser:
 def main() -> Tuple[List[Book], List[Library], int]:
     args = parse_args()
 
-    start = time.time()
-    books, libraries, no_days = read_lib(args.file)
-    end = time.time()
-    print(f'finished in {end-start} seconds.')
+    if not os.path.exists(args.file.replace('.txt', '/')):
+        os.makedirs(args.file.replace('.txt', '/'))
+        start = time.time()
+        books, libraries, meta = read_lib(args.file)
+        end = time.time()
+        print(f'finished in {end-start} seconds.')
 
-    return books, libraries, no_days
+        with open(args.file.replace('.txt', '/') + 'books.dll', 'wb') as file:
+            dill.dump(books, file)
+        with open(args.file.replace('.txt', '/') + 'libraries.dll', 'wb') as file:
+            dill.dump(libraries, file)
+        with open(args.file.replace('.txt', '/') + 'meta.dll', 'wb') as file:
+            dill.dump(meta, file)
+    else:        
+        with open(args.file.replace('.txt', '/') + 'books.dll', 'rb') as file:
+            books = dill.load(file)
+        with open(args.file.replace('.txt', '/') + 'libraries.dll', 'rb') as file:
+            libraries = dill.load(file)
+        with open(args.file.replace('.txt', '/') + 'meta.dll', 'rb') as file:
+            meta = dill.load(file)
+    # print(libraries)
+    # print(books)
+    return books, libraries, meta
 
 def read_lib(fpath: str) -> Tuple[List[Book], List[Library], int]:
     with open(fpath) as f:
         data_str = f.read()
     data_lines = data_str.splitlines()
-    data_num_lists = [list(map(int, line.split(' '))) for line in data_lines]
+    try:
+        data_num_lists = [list(map(int, line.split(' '))) for line in data_lines]
+    except ValueError:
+        data_num_lists = [list(map(int, line.split(' '))) for line in data_lines[:-1]]
+        print(f'No line provided at the end out of {len(data_lines)}')
     (meta, book_scores, *lib_lines) = data_num_lists
     (no_books, no_libraries, no_days) = meta
     book_ids = list(range(len(book_scores)))
 
     libraries = []
+
+    temp_id = 0
+
     for no, line in enumerate(lib_lines):
         if no % 2 == 0:
-            book_id = no
+            book_id = temp_id
+            temp_id += 1
             (no_books_lib, time_to_signup, scan_per_day) = line
         else:
             books_in_lib = line
@@ -83,8 +110,8 @@ def read_lib(fpath: str) -> Tuple[List[Book], List[Library], int]:
     print(f'There are {no_books} books.')
     print(f'There are {no_libraries} libraries.')
     print(f'We have {no_days} days available.')
+    return books, libraries, {'no_days': no_days, 'no_libraries': no_libraries, 'no_books': no_books}
 
-    return (books, libraries, no_days)
 
 # def print_lib(lib: List[List[int]]) -> None:
 #     for line in lib:
